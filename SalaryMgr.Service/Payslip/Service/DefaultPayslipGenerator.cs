@@ -6,47 +6,54 @@ namespace SalaryMgr.Service
 {
     public class DefaultPayslipGenerator : IPayslipGenerator
     {
-        private const int MONTHS_IN_A_YEAR = 12;
+        private const int MonthsInAYear = 12;
 
         public Payslip Generate(Employee employee)
         {
+            
+            //TODO Have to refactor this later to prevent the rules from being loaded multiple times.
             var rules = TaxRule.LoadRules();
 
-            return Process(employee, rules);
+            foreach (var rule in rules)
+            {
+                if (employee.Salary >= rule.TaxBracketMin)
+                {
+                    /*There will be one rule with no TaxBracketMax*/
+                    if (rule.TaxBracketMax.HasValue)
+                    {
+                        if (employee.Salary <= rule.TaxBracketMax.Value)
+                            return CalculateIncome(employee, rule);
+                    }
+                    else
+                        return CalculateIncome(employee, rule);
+                }
+            }
+
+            return null;
         }
 
         /*Notes: All calculation results should be rounded to the whole dollar. 
         If >= 50 cents round up to the next dollar increment, otherwise round down.
-        */
 
+            This method has been separated so that the RoundingMechanism is consistent throughout our calculations.
+        */
         public static decimal SalaryRound(decimal val)
         {
             return Math.Round(val, MidpointRounding.AwayFromZero);
         }
+       
 
-        private Payslip Process(Employee employee, List<TaxRule> rules)
+        /*Can make all calculations in one method*/
+        private Payslip CalculateIncome(Employee employee, TaxRule rule)
         {
-            var ps = new Payslip();
-
-            ps.GrossIncome = SalaryRound(employee.Salary/MONTHS_IN_A_YEAR);
-
-            foreach (var rule in rules)
-            {
-                if (rule.TaxBracketMax.HasValue)
-                {
-                    if (employee.Salary >= rule.TaxBracketMin && employee.Salary <= rule.TaxBracketMax.Value)
-                    {
-                        ps.IncomeTax =
-                            SalaryRound((rule.BaseTaxAmount + (employee.Salary - rule.TaxBracketMin)*rule.ExcessAmount)/
-                                        MONTHS_IN_A_YEAR);
-                        break;
-                    }
-                }
-            }
-
+            Payslip ps = new Payslip();
+            ps.GrossIncome = SalaryRound(employee.Salary / MonthsInAYear);
+            ps.Super = SalaryRound(ps.GrossIncome * employee.SuperRate / 100);
+            ps.IncomeTax = SalaryRound((rule.BaseTaxAmount + (employee.Salary - rule.TaxBracketMin) * rule.ExcessAmount) /
+                               MonthsInAYear);
             ps.NetIncome = ps.GrossIncome - ps.IncomeTax;
-            ps.Super = SalaryRound(ps.GrossIncome*employee.SuperRate/100);
             return ps;
         }
+        
     }
 }
