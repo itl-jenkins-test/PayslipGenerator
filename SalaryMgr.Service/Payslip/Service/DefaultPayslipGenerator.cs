@@ -48,7 +48,7 @@ namespace SalaryMgr.Service
         {
             Payslip ps = new Payslip();
             ps.GrossIncome = SalaryRound(employee.Salary / MonthsInAYear);
-            ps.Super = SalaryRound(ps.GrossIncome * employee.SuperRate / 100);
+            ps.Super = SalaryRound(ps.GrossIncome * employee.SuperRate.Value / 100);
             ps.IncomeTax = SalaryRound((rule.BaseTaxAmount + (employee.Salary - rule.TaxBracketMin) * rule.ExcessAmount) /
                                MonthsInAYear);
             ps.NetIncome = ps.GrossIncome - ps.IncomeTax;
