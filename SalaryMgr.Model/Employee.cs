@@ -12,6 +12,11 @@ namespace SalaryMgr.Model
         private DateTime? startDate;
         private DateTime? endDate;
 
+        public Employee()
+        {
+            
+        }
+
         //Closing out the properties so they can't be set any other way than the constructor
         public Employee(string fname, string lname, int sal, decimal rate, string startDate, string endDate)
         {
@@ -35,14 +40,12 @@ namespace SalaryMgr.Model
         
         public string FirstName {
             get { return firstName; }
-            private set
+            set
             {
                 if(String.IsNullOrEmpty(value))
                     throw new ArgumentException("First Name must be provided");
-                else
-                {
-                    firstName = value;
-                }
+
+                firstName = value;                
             } 
         }
 
@@ -52,25 +55,21 @@ namespace SalaryMgr.Model
             {
                 return lastName;
             }
-            private set
+            set
             {
                 if (String.IsNullOrEmpty(value))
                     throw new ArgumentException("Last Name must be provided");
-                else
-                {
-                    lastName = value;
-                }
 
+                lastName = value;                
             }
         }
 
         public int Salary { get { return salary; }
-           private set
+           set
             {
                 if (value < 0)
-                {
                     throw new ArgumentException("Salary is a positive value");
-                }
+
                 salary = value;
             }
         }
@@ -78,55 +77,40 @@ namespace SalaryMgr.Model
         
         public decimal? SuperRate {
             get { return superRate; }
-            private set {
+            set {
                 if (!value.HasValue)
-                {
                     throw new ArgumentException("Super Rate must be provided");
-                }
-                if (value >= 0 && value <= 50)
-                {
-                    superRate = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Super Rate value must be between 0 and 50 both inclusive");
-                }
+
+                if (value < 0 || value > 50)
+                    throw new ArgumentException("Super Rate value must be between 0 and 50 both inclusive"); 
+                
+                superRate = value;
             }
         }
 
         
         public DateTime? StartDate {
             get { return startDate;}
-            private set
+            set
             {
-                if (value.HasValue)
-                {
-                    startDate = value;
-                }
-                else
-                {
+                if (!value.HasValue)                
                     throw new ArgumentException("Start Date must be provided");
-                }
+
+                startDate = value;
             }
         }
 
         
         public DateTime? EndDate {
             get { return endDate;}
-            private set
+            set
             {
                 if (!value.HasValue)
-                {
                     throw new ArgumentException("End Date must be provided");
-                }
-                if (DateTime.Compare(StartDate.Value,value.Value) < 0)
-                {
-                    endDate = value;
-                }
-                else
-                {
+                if (DateTime.Compare(StartDate.Value,value.Value) >= 0)
                     throw new ArgumentException("End Date has to be greater than Start Date");
-                }
+
+                endDate = value;
             }
         }
     }
