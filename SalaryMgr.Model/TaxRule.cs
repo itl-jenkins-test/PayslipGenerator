@@ -10,6 +10,7 @@ namespace SalaryMgr.Model
         public int TaxBracketMin { get; private set; }
         public string TaxYear { get; private set; }
 
+
         public static List<TaxRule> LoadRules()
         {
             var rules = new List<TaxRule>();

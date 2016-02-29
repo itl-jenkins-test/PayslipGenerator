@@ -2,73 +2,86 @@
 using CommandLine;
 using CommandLine.Text;
 using SalaryMgr.Model;
-// if you want text formatting helpers (recommended)
 using SalaryMgr.Service;
 
 namespace PayslipGenerator
 {
+    // Define a class to receive parsed values
+    class Options
+    {
+        [Option('i', "input", Required = true,
+          HelpText = "Input mode")]
+        public string InputMode { get; set; }
+
+        [Option('s', "inputfile", Required = false,
+          HelpText = "Input file")]
+        public string InputFile { get; set; }
+
+        [Option('o', "output", Required = true,
+          HelpText = "Output mode")]
+        public string OutputMode { get; set; }
+
+        [Option('t', "outputfile", Required = false,DefaultValue ="N", 
+          HelpText = "Output file")]
+        public string OutputFile { get; set; }
+
+        [Option('v', "verbose", DefaultValue = false,
+          HelpText = "Prints all messages to standard output.")]
+        public bool Verbose { get; set; }
+
+        [ParserState]
+        public IParserState LastParserState { get; set; }
+
+        [HelpOption]
+        public string GetUsage()
+        {
+            return HelpText.AutoBuild(this,
+              (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+        }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
         {
-            //TODO will have to bring in command line arguments for differentiating between interactive mode and CSV mode
-            /*var options = new CommandLineOptions();
+
+            var options = new Options();
+            PayslipGenerator pg = new PayslipGenerator();
+
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-               Console.WriteLine("working ...");
+                // Values are available here
+                if (options.Verbose)
+                {
+                    Console.WriteLine($"Input Mode: {options.InputMode}");
+                    Console.WriteLine($"Input File: {options.InputFile}");
+                    Console.WriteLine($"Output Mode: {options.OutputFile}");
+                    Console.WriteLine($"Output File: {options.OutputMode}");
+                }
+
+                if (options.InputMode.CompareTo("manual") == 0)
+                {
+                    pg.ReadFromConsole();
+                }
+                if (options.InputMode.CompareTo("file") == 0)
+                {
+                    if (!String.IsNullOrEmpty(options.InputFile))
+                        pg.ReadFromFile(options.InputFile);
+                }
+                pg.Process();
+                if (options.OutputMode.CompareTo("console") == 0)
+                {
+                    pg.WriteToConsole();
+                }
+                if (options.OutputMode.CompareTo("file") == 0)
+                {
+                    if (!String.IsNullOrEmpty(options.OutputFile))
+                        pg.WriteToFile(options.OutputFile);
+                }
+
             }
-            else
-            {
-                // Display the default usage information
-                Console.WriteLine(options.GetUsage());
-            }*/
-
-
-            //TODO no validations for now. Have to introduce in next iteration.
-            Console.Write("First Name:");
-            String firstName = Console.ReadLine();
-
-            Console.Write("Last Name:");
-            String lastName = Console.ReadLine();
-
-            Console.Write("Annual Salary:");
-            String salary = Console.ReadLine();
-
-            Console.Write("Super Rate:");
-            String superRate = Console.ReadLine();
-
-            Console.Write("Payment Start Date:");
-            String paymentStartDate = Console.ReadLine();
-
-            Console.Write("Payment End Date:");
-            String paymentEndDate = Console.ReadLine();
-
-            ProcessCommandLine(firstName, lastName, salary, superRate, paymentStartDate, paymentEndDate);
         }
 
-        //TODO still restricted to a single entry, will have to refactor to allow for multiple entries later
-        private static void ProcessCommandLine(string firstName, string lastName, string salary, string superRate,
-            string paymentStartDate, string paymentEndDate)
-        {
-            Employee emp = new Employee(firstName, lastName, Int32.Parse(salary), Decimal.Parse(superRate), paymentStartDate,
-                paymentEndDate);
-
-            //TODO Bad design pointing to the only concrete implementation of the IPayslipGenerator. Will have to refactor
-            //this out in some iteration
-            IPayslipGenerator pg = new DefaultPayslipGenerator();
-
-            Payslip ps = pg.Generate(emp);
-
-            //TODO Have to move this into a Class formatter of sorts with implementations for Screen and CSV
-            //TODO this will allow CSV input/output and screen input/output 
-            Console.WriteLine($"Name {emp.FirstName} {emp.LastName}");
-            Console.WriteLine($"Pay Period {emp.StartDate} {emp.EndDate}");
-            Console.WriteLine($"Gross Income {ps.GrossIncome}");
-            Console.WriteLine($"Income Tax {ps.IncomeTax}");
-            Console.WriteLine($"Net Income {ps.NetIncome}");
-            Console.WriteLine($"Super {ps.Super}");
-
-            Console.ReadLine();
-        }
+        
     }
 }

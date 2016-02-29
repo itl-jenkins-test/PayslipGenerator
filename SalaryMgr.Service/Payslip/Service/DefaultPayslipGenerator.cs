@@ -8,13 +8,43 @@ namespace SalaryMgr.Service
     {
         private const int MonthsInAYear = 12;
 
-        public Payslip Generate(Employee employee)
+        private List<TaxRule> rules;
+
+        //Provide constructor chaining to allow for the Default constructor to load the static rules
+        public DefaultPayslipGenerator(): this(TaxRule.LoadRules())
         {
             
-            //TODO Have to refactor this later to prevent the rules from being loaded multiple times.
-            var rules = TaxRule.LoadRules();
+        }
 
-            foreach (var rule in rules)
+        //Loaded once when the Generator is created.
+        //Now supports custom rules being provided
+        public DefaultPayslipGenerator(List<TaxRule> rulesToApply)
+        {
+            if (rulesToApply != null && rulesToApply.Count > 0)
+            {
+                rules = rulesToApply;
+            }            
+        }
+
+        /// <summary>
+        /// Handles multiple employees. Demonstration of Overloading
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        public List<Payslip> Generate(List<Employee> employees)
+        {
+            List<Payslip> payslips = new List<Payslip>();
+
+            foreach (var emp in employees)
+            {
+                payslips.Add(Generate(emp));    
+            }    
+            return payslips;
+        }
+
+        public Payslip Generate(Employee employee)
+        {                        
+            foreach (TaxRule rule in rules)
             {
                 if (employee.Salary >= rule.TaxBracketMin)
                 {
@@ -47,6 +77,8 @@ namespace SalaryMgr.Service
         private Payslip CalculateIncome(Employee employee, TaxRule rule)
         {
             Payslip ps = new Payslip();
+            ps.Name = $"{employee.FirstName} {employee.LastName}";
+            ps.PayPeriod = $"{employee.StartDate.Value.ToShortDateString()}={employee.EndDate.Value.ToShortDateString()}";
             ps.GrossIncome = SalaryRound(employee.Salary / MonthsInAYear);
             ps.Super = SalaryRound(ps.GrossIncome * employee.SuperRate.Value / 100);
             ps.IncomeTax = SalaryRound((rule.BaseTaxAmount + (employee.Salary - rule.TaxBracketMin) * rule.ExcessAmount) /

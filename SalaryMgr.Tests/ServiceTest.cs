@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SalaryMgr.Model;
 using SalaryMgr.Service;
 
@@ -34,6 +35,27 @@ namespace SalaryMgr.Tests
             Assert.AreEqual(15833, ps.GrossIncome);
             Assert.AreEqual(1425, ps.Super);
             Assert.AreEqual(4921, ps.IncomeTax);            
-        }       
+        }
+
+        [TestMethod]
+        public void MultipleEmployeeTest()
+        {
+            IPayslipGenerator pg = new DefaultPayslipGenerator();
+
+            Employee emp1 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
+            Employee emp2 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
+            Employee emp3 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
+            Employee emp4 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
+
+            List<Employee> emps = new List<Employee>();
+            emps.Add(emp1);
+            emps.Add(emp2);
+            emps.Add(emp3);
+            emps.Add(emp4);
+
+            List<Payslip> resultPayslips = pg.Generate(emps);
+
+            Assert.AreEqual(4,resultPayslips.Count);          
+        }
     }
 }
