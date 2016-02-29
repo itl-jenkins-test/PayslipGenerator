@@ -50,7 +50,7 @@ namespace PayslipGenerator
         private static void ProcessCommandLine(string firstName, string lastName, string salary, string superRate,
             string paymentStartDate, string paymentEndDate)
         {
-            Employee emp = new Employee(firstName, lastName, Decimal.Parse(salary), Decimal.Parse(superRate), paymentStartDate,
+            Employee emp = new Employee(firstName, lastName, Int32.Parse(salary), Decimal.Parse(superRate), paymentStartDate,
                 paymentEndDate);
 
             //TODO Bad design pointing to the only concrete implementation of the IPayslipGenerator. Will have to refactor

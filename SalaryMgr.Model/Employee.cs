@@ -1,37 +1,133 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace SalaryMgr.Model
 {
     public class Employee
     {
-        public Employee(string firstName, string v2, decimal v3, decimal v4, string startDate, string endDate)
+        private string firstName;
+        private string lastName;
+        private int salary;
+        private decimal? superRate;
+        private DateTime? startDate;
+        private DateTime? endDate;
+
+        //Closing out the properties so they can't be set any other way than the constructor
+        public Employee(string fname, string lname, int sal, decimal rate, string startDate, string endDate)
         {
-            FirstName = firstName;
-            LastName = v2;
-            Salary = v3;
-            SuperRate = v4;
-            StartDate = DateTime.Parse(startDate);
-            EndDate = DateTime.Parse(endDate);
+            FirstName = fname;
+            LastName = lname;
+            Salary = sal;
+            SuperRate = rate;
+            
+            //TODO should move this into the property eventually
+            if(String.IsNullOrEmpty(startDate))
+                throw new ArgumentException("Start Date must be provided and in the format yyyy-mm-dd");
+             else
+                StartDate = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            if (String.IsNullOrEmpty(endDate))
+                throw new ArgumentException("End Date must be provided and in the format yyyy-mm-dd");
+            else
+                EndDate = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
 
-        [Required(ErrorMessage = "Please Enter Customer Name")]
-        public string FirstName { get; }
+        
+        public string FirstName {
+            get { return firstName; }
+            private set
+            {
+                if(String.IsNullOrEmpty(value))
+                    throw new ArgumentException("First Name must be provided");
+                else
+                {
+                    firstName = value;
+                }
+            } 
+        }
 
-        public string LastName { get; }
+        public string LastName
+        {
+            get
+            {
+                return lastName;
+            }
+            private set
+            {
+                if (String.IsNullOrEmpty(value))
+                    throw new ArgumentException("Last Name must be provided");
+                else
+                {
+                    lastName = value;
+                }
 
-        [Required(ErrorMessage = "Please Enter Customer Name")]
-        public decimal Salary { get; }
+            }
+        }
 
-        [Required]
-        [Range(0, 50,
-            ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-        public decimal SuperRate { get; }
+        public int Salary { get { return salary; }
+           private set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Salary is a positive value");
+                }
+                salary = value;
+            }
+        }
 
-        [Required(ErrorMessage = "Please Enter Customer Name")]
-        public DateTime StartDate { get; }
+        
+        public decimal? SuperRate {
+            get { return superRate; }
+            private set {
+                if (!value.HasValue)
+                {
+                    throw new ArgumentException("Super Rate must be provided");
+                }
+                if (value >= 0 && value <= 50)
+                {
+                    superRate = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Super Rate value must be between 0 and 50 both inclusive");
+                }
+            }
+        }
 
-        [Required(ErrorMessage = "Please Enter Customer Name")]
-        public DateTime EndDate { get; }
+        
+        public DateTime? StartDate {
+            get { return startDate;}
+            private set
+            {
+                if (value.HasValue)
+                {
+                    startDate = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Start Date must be provided");
+                }
+            }
+        }
+
+        
+        public DateTime? EndDate {
+            get { return endDate;}
+            private set
+            {
+                if (!value.HasValue)
+                {
+                    throw new ArgumentException("End Date must be provided");
+                }
+                if (DateTime.Compare(StartDate.Value,value.Value) < 0)
+                {
+                    endDate = value;
+                }
+                else
+                {
+                    throw new ArgumentException("End Date has to be greater than Start Date");
+                }
+            }
+        }
     }
 }
