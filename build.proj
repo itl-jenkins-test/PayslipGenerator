@@ -1,0 +1,31 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<MSTest>"C:\Program Files (x86)\Common7\IDE\MSTest.exe"</MSTest>	
+  </PropertyGroup>
+  <ItemGroup>	
+	<App Include="SalaryMgr.sln" />
+	<TestFiles Include="**\*.csv"/>
+  </ItemGroup>
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build">
+  </Target>
+  <Target Name="Build" >
+    <MSBuild Projects="@(App)" Targets="Build" StopOnFirstFailure="True" />
+  </Target>
+  <Target Name="Clean">
+    <MSBuild Projects="@(App)" Targets="Clean" StopOnFirstFailure="True" />
+  </Target>
+  <Target Name="CopyTestFiles">
+        <Copy
+            SourceFiles="@(TestFiles)"
+            DestinationFolder="**\bin\debug"
+        />
+   </Target>
+  <Target Name="Test" DependsOnTargets="Build">
+    <ItemGroup>
+		<TestAssemblies Include="**\bin\debug\*Tests.dll"/>
+	</ItemGroup>
+    <Exec Condition=" '@(TestAssemblies)' != ''"
+          Command="$(MSTest) @(TestAssemblies ->'/testcontainer:&quot;%(RecursiveDir)%(Filename)%(Extension)&quot;', ' ')"
+          />	
+  </Target>  
+</Project>

@@ -2,8 +2,20 @@
 
 namespace SalaryMgr.Model
 {
+    /// <summary>
+    /// Allows for the TaxRule to be loaded in future from a file on disk or even provided by the execution
+    /// </summary>
     public class TaxRule
     {
+        public TaxRule(int v1, int? v2, int v3, decimal v4,string taxYear)
+        {
+            this.TaxBracketMin = v1;
+            this.TaxBracketMax = v2;
+            this.BaseTaxAmount = v3;
+            this.ExcessAmount = v4;
+            this.TaxYear = taxYear;
+        }
+
         public int BaseTaxAmount { get; private set; }
         public decimal ExcessAmount { get; private set; }
         public int? TaxBracketMax { get; private set; }
@@ -14,41 +26,19 @@ namespace SalaryMgr.Model
         public static List<TaxRule> LoadRules()
         {
             var rules = new List<TaxRule>();
-            var a = new TaxRule();
-            a.TaxBracketMin = 0;
-            a.TaxBracketMax = 18200;
-            a.BaseTaxAmount = 0;
-            a.ExcessAmount = 0;
-
+            var a = new TaxRule(0,18200,0,0,"2012-2013");            
             rules.Add(a);
 
-            var b = new TaxRule();
-            b.TaxBracketMin = 18201;
-            b.TaxBracketMax = 37000;
-            b.BaseTaxAmount = 0;
-            b.ExcessAmount = .19m;
+            var b = new TaxRule(18201, 37000, 0, .19m, "2012-2013");    
             rules.Add(b);
 
-            var c = new TaxRule();
-            c.TaxBracketMin = 37001;
-            c.TaxBracketMax = 80000;
-            c.BaseTaxAmount = 3572;
-            c.ExcessAmount = .325m;
+            var c = new TaxRule(37001, 80000, 3572, .325m, "2012-2013");
             rules.Add(c);
 
-            var d = new TaxRule();
-            d.TaxBracketMin = 80001;
-            d.TaxBracketMax = 180000;
-            d.BaseTaxAmount = 17547;
-            d.ExcessAmount = .37m;
-
+            var d = new TaxRule(80001, 180000, 1754, .37m, "2012-2013");
             rules.Add(d);
 
-            var e = new TaxRule();
-            e.TaxBracketMin = 180001;
-            e.BaseTaxAmount = 54547;
-            e.ExcessAmount = .45m;
-
+            var e = new TaxRule(180001, null, 54547, .45m, "2012-2013");
             rules.Add(e);
 
             return rules;

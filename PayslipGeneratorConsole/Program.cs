@@ -1,7 +1,6 @@
 ﻿using System;
 using CommandLine;
 using CommandLine.Text;
-using SalaryMgr.Model;
 using SalaryMgr.Service;
 
 namespace PayslipGenerator
@@ -10,21 +9,22 @@ namespace PayslipGenerator
     class Options
     {
         [Option('i', "input", Required = true,
-          HelpText = "Input mode")]
+          HelpText = "Input mode. Options console|file")]
         public string InputMode { get; set; }
 
         [Option('s', "inputfile", Required = false,
-          HelpText = "Input file")]
+          HelpText = "Provide the name of the file containing employee records. CSV file")]
         public string InputFile { get; set; }
 
         [Option('o', "output", Required = true,
-          HelpText = "Output mode")]
+          HelpText = "Output mode. Options console|file")]
         public string OutputMode { get; set; }
 
         [Option('t', "outputfile", Required = false,DefaultValue ="N", 
-          HelpText = "Output file")]
+          HelpText = "Provide the name of the file for the payslip records")]
         public string OutputFile { get; set; }
 
+        //TODO can trap this statement to display logging
         [Option('v', "verbose", DefaultValue = false,
           HelpText = "Prints all messages to standard output.")]
         public bool Verbose { get; set; }
@@ -46,7 +46,7 @@ namespace PayslipGenerator
         {
 
             var options = new Options();
-            PayslipGenerator pg = new PayslipGenerator();
+            IPayslipGenerator pg = ServiceProvider.GetPayslipGenerator();
 
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
@@ -59,24 +59,30 @@ namespace PayslipGenerator
                     Console.WriteLine($"Output File: {options.OutputMode}");
                 }
 
-                if (options.InputMode.CompareTo("manual") == 0)
+                //TODO Could do with better validation around the input parameters. 
+                if (options.InputMode.ToLower().Equals("console"))
                 {
                     pg.ReadFromConsole();
                 }
-                if (options.InputMode.CompareTo("file") == 0)
+                if (options.InputMode.ToLower().Equals("file"))
                 {
                     if (!String.IsNullOrEmpty(options.InputFile))
                         pg.ReadFromFile(options.InputFile);
                 }
+
                 pg.Process();
-                if (options.OutputMode.CompareTo("console") == 0)
+
+                if (pg.GetPayslipsGeneratedCount() > 0)
                 {
-                    pg.WriteToConsole();
-                }
-                if (options.OutputMode.CompareTo("file") == 0)
-                {
-                    if (!String.IsNullOrEmpty(options.OutputFile))
-                        pg.WriteToFile(options.OutputFile);
+                    if (options.OutputMode.ToLower().Equals("console"))
+                    {
+                        pg.WriteToConsole();
+                    }
+                    if (options.OutputMode.ToLower().Equals("file"))
+                    {
+                        if (!String.IsNullOrEmpty(options.OutputFile))
+                            pg.WriteToFile(options.OutputFile);
+                    }
                 }
 
             }
