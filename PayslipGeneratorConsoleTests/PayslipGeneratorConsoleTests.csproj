@@ -59,12 +59,26 @@
       <Project>{5B9BB0DC-B17D-4ED8-8145-BE37A56ECF85}</Project>
       <Name>PayslipGeneratorConsole</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SalaryMgr.Service\SalaryMgr.Service.csproj">
+      <Project>{0e947030-0879-452d-80b2-bdcee30cf8f2}</Project>
+      <Name>SalaryMgr.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="import\test1.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="output\test1.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="import\badheader.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="import\badrows.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

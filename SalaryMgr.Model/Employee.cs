@@ -5,12 +5,12 @@ namespace SalaryMgr.Model
 {
     public class Employee
     {
-        private string firstName;
-        private string lastName;
-        private int salary;
-        private decimal? superRate;
-        private DateTime? startDate;
-        private DateTime? endDate;
+        private string _firstName;
+        private string _lastName;
+        private int _salary;
+        private decimal? _superRate;
+        private DateTime? _startDate;
+        private DateTime? _endDate;
 
         public Employee()
         {
@@ -39,13 +39,13 @@ namespace SalaryMgr.Model
 
         
         public string FirstName {
-            get { return firstName; }
+            get { return _firstName; }
             set
             {
                 if(String.IsNullOrEmpty(value))
                     throw new ArgumentException("First Name must be provided");
 
-                firstName = value;                
+                _firstName = value;                
             } 
         }
 
@@ -53,30 +53,30 @@ namespace SalaryMgr.Model
         {
             get
             {
-                return lastName;
+                return _lastName;
             }
             set
             {
                 if (String.IsNullOrEmpty(value))
                     throw new ArgumentException("Last Name must be provided");
 
-                lastName = value;                
+                _lastName = value;                
             }
         }
 
-        public int Salary { get { return salary; }
+        public int Salary { get { return _salary; }
            set
             {
                 if (value < 0)
                     throw new ArgumentException("Salary is a positive value");
 
-                salary = value;
+                _salary = value;
             }
         }
 
         
         public decimal? SuperRate {
-            get { return superRate; }
+            get { return _superRate; }
             set {
                 if (!value.HasValue)
                     throw new ArgumentException("Super Rate must be provided");
@@ -84,25 +84,25 @@ namespace SalaryMgr.Model
                 if (value < 0 || value > 50)
                     throw new ArgumentException("Super Rate value must be between 0 and 50 both inclusive"); 
                 
-                superRate = value;
+                _superRate = value;
             }
         }
 
         
         public DateTime? StartDate {
-            get { return startDate;}
+            get { return _startDate;}
             set
             {
                 if (!value.HasValue)                
                     throw new ArgumentException("Start Date must be provided");
 
-                startDate = value;
+                _startDate = value;
             }
         }
 
         
         public DateTime? EndDate {
-            get { return endDate;}
+            get { return _endDate;}
             set
             {
                 if (!value.HasValue)
@@ -110,7 +110,7 @@ namespace SalaryMgr.Model
                 if (DateTime.Compare(StartDate.Value,value.Value) >= 0)
                     throw new ArgumentException("End Date has to be greater than Start Date");
 
-                endDate = value;
+                _endDate = value;
             }
         }
     }

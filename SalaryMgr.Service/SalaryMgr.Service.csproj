@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,8 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Payslip\Service\DefaultPayslipGenerator.cs" />
-    <Compile Include="Payslip\Service\IPayslipGenerator.cs" />
+    <Compile Include="Service\DefaultPayslipCalculatorImpl.cs" />
+    <Compile Include="Service\IPayslipCalculator.cs" />
+    <Compile Include="Service\IPayslipGenerator.cs" />
+    <Compile Include="Service\DefaultPayslipGeneratorImpl.cs" />
+    <Compile Include="Service\ServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +56,9 @@
       <Project>{66a67e7c-e998-4963-a457-6ec07da3d04a}</Project>
       <Name>SalaryMgr.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

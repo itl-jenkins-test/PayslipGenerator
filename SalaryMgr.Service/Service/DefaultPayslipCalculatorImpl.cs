@@ -4,25 +4,25 @@ using SalaryMgr.Model;
 
 namespace SalaryMgr.Service
 {
-    public class DefaultPayslipGenerator : IPayslipGenerator
+    public class DefaultPayslipCalculatorImpl : IPayslipCalculator
     {
         private const int MonthsInAYear = 12;
 
-        private List<TaxRule> rules;
+        public List<TaxRule> Rules { get; }
 
         //Provide constructor chaining to allow for the Default constructor to load the static rules
-        public DefaultPayslipGenerator(): this(TaxRule.LoadRules())
+        public DefaultPayslipCalculatorImpl(): this(TaxRule.LoadRules())
         {
             
         }
 
         //Loaded once when the Generator is created.
         //Now supports custom rules being provided
-        public DefaultPayslipGenerator(List<TaxRule> rulesToApply)
+        public DefaultPayslipCalculatorImpl(List<TaxRule> rulesToApply)
         {
             if (rulesToApply != null && rulesToApply.Count > 0)
             {
-                rules = rulesToApply;
+                Rules = rulesToApply;
             }            
         }
 
@@ -31,20 +31,20 @@ namespace SalaryMgr.Service
         /// </summary>
         /// <param name="employees"></param>
         /// <returns></returns>
-        public List<Payslip> Generate(List<Employee> employees)
+        public List<Payslip> Calculate(List<Employee> employees)
         {
             List<Payslip> payslips = new List<Payslip>();
 
             foreach (var emp in employees)
             {
-                payslips.Add(Generate(emp));    
+                payslips.Add(Calculate(emp));    
             }    
             return payslips;
         }
 
-        public Payslip Generate(Employee employee)
+        public Payslip Calculate(Employee employee)
         {                        
-            foreach (TaxRule rule in rules)
+            foreach (TaxRule rule in Rules)
             {
                 if (employee.Salary >= rule.TaxBracketMin)
                 {

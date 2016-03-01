@@ -11,10 +11,10 @@ namespace SalaryMgr.Tests
         [TestMethod]
         public void BasicTest()
         {
-            IPayslipGenerator pg = new DefaultPayslipGenerator();
+            IPayslipCalculator pg = new DefaultPayslipCalculatorImpl();
             Payslip ps;
             Assert.IsNotNull(
-                ps = pg.Generate(new Employee("Mathew", "Joseph", 60050, 9.0m, "2012-03-01", "2012-03-30"))
+                ps = pg.Calculate(new Employee("Mathew", "Joseph", 60050, 9.0m, "2012-03-01", "2012-03-30"))
                 )
                 ;
             Assert.AreEqual(5004, ps.GrossIncome);
@@ -26,10 +26,10 @@ namespace SalaryMgr.Tests
         [TestMethod]
         public void MaxSalaryTest()
         {
-            IPayslipGenerator pg = new DefaultPayslipGenerator();
+            IPayslipCalculator pg = new DefaultPayslipCalculatorImpl();
             Payslip ps;
             Assert.IsNotNull(
-                ps = pg.Generate(new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30"))
+                ps = pg.Calculate(new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30"))
                 )
                 ;
             Assert.AreEqual(15833, ps.GrossIncome);
@@ -40,7 +40,7 @@ namespace SalaryMgr.Tests
         [TestMethod]
         public void MultipleEmployeeTest()
         {
-            IPayslipGenerator pg = new DefaultPayslipGenerator();
+            IPayslipCalculator pg = new DefaultPayslipCalculatorImpl();
 
             Employee emp1 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
             Employee emp2 = new Employee("Mathew", "Joseph", 190000, 9.0m, "2012-03-01", "2012-03-30");
@@ -53,7 +53,7 @@ namespace SalaryMgr.Tests
             emps.Add(emp3);
             emps.Add(emp4);
 
-            List<Payslip> resultPayslips = pg.Generate(emps);
+            List<Payslip> resultPayslips = pg.Calculate(emps);
 
             Assert.AreEqual(4,resultPayslips.Count);          
         }
