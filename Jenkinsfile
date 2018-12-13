@@ -1,7 +1,13 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('error') {
+      agent {
+        node {
+          label 'build'
+        }
+
+      }
       steps {
         powershell 'build.ps1'
       }
