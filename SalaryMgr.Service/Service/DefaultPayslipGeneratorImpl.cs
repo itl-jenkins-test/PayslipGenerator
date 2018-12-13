@@ -124,14 +124,11 @@ namespace SalaryMgr.Service
                 }
             }
             //TODO Should be piped to a logging framework for later
-            catch (CsvReaderException e)
+            catch (Exception e)
             {
                 Console.WriteLine("Error while reading the source file " + e.Message);
             }
-            catch (CsvTypeConverterException e)
-            {
-                Console.WriteLine("Error while reading the source file " + e.Data["CsvHelper"]);
-            }            
+                    
         }
     }
 }
